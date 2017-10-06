@@ -44,7 +44,7 @@ jobs:
             echo Failed waiting for Postgres && exit 1
       - run:
           name: Setup the database
-          command: psql -U ubuntu -d circle_test -a -f schema.sql
+          command: psql -h localhost -p 5432 -U ubuntu -d circle_test -a -f schema.sql
       - run:
           name: Run the Tests
           command: |
