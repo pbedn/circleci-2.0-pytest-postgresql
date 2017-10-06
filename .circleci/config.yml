@@ -28,9 +28,23 @@ jobs:
           key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
           paths:
             - "venv"
-      # - run:
-      #     name: Setup the database
-      #     command: psql -U ubuntu -d circle_test -a -f schema.sql
+      - run:
+          name: Installing PostgreSQL-client
+          command: |
+            sudo apt-get install postgresql-client
+      - run:
+          name: Waiting for PostgreSQL to start
+          command: |
+            for i in `seq 1 10`;
+            do
+              nc -z localhost 5432 && echo Success && exit 0
+              echo -n .
+              sleep 2
+            done
+            echo Failed waiting for Postgres && exit 1
+      - run:
+          name: Setup the database
+          command: psql -U ubuntu -d circle_test -a -f schema.sql
       - run:
           name: Run the Tests
           command: |
