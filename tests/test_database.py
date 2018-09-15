@@ -1,11 +1,32 @@
 import os
 import pytest
+from psycopg2 import sql
 
 from app import my_app
-from app.connect_to_db import connect_to_db, setup_database
+from app.connect_to_db import connect_to_db
 
 
 DATABASE = os.environ["DB_NAME"]
+
+SQL_QUERY = """
+CREATE SCHEMA trains;
+
+create sequence trains.gtfs_id_seq
+    maxvalue 99999999999999999
+;
+
+create table trains.gtfs
+(
+    id integer default nextval('trains.gtfs_id_seq'::regclass) not null
+        constraint gtfs_pkey primary key
+    ,route char(6) not null
+    ,active boolean default true not null
+);
+
+create index gtfs_id_idx
+    on trains.gtfs (id)
+;
+"""
 
 input_data = [('000068', True),
               ('000069', True),
@@ -14,6 +35,10 @@ input_data = [('000068', True),
 expected = [('000068', True),
             ('000069', True),
             ('000070', False)]
+
+
+def setup_database(cur):
+    cur.execute(sql.SQL(SQL_QUERY))
 
 
 @pytest.fixture(scope="module")
