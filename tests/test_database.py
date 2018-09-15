@@ -44,7 +44,7 @@ def setup_database(cur):
 @pytest.fixture(scope="module")
 def db():
     con, cur = connect_to_db(DATABASE)
-    setup_database(cur)
+    # setup_database(cur)
     yield con, cur
     con.close()
 
