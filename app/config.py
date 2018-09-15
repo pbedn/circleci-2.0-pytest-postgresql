@@ -5,4 +5,4 @@ class DBlogin():
         self.password = password
         self.host = host
 
-db_login_dict = {"circleci": DBlogin("circle_test", "ubuntu", "", "localhost")}
+db_login_dict = {"circle_test": DBlogin("circle_test", "ubuntu", "", "localhost")}
